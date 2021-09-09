@@ -1,13 +1,18 @@
 // require('dotenv').config()
 
-    var ip = "7.8.8.8";
-    // var api_key = process.env.API_KEY;
-    // console.log(process.env)
+// const { map } = require("leaflet");
 
     let input = document.getElementById('input')
     let mapContainer = document.getElementById('mapid')
-  
-    const ipSearch = () => {
+    let ip;
+    var api_key = '';
+    let ipDiv = document.getElementById('ip')
+    let ispDiv = document.getElementById('isp')
+    let regionDiv = document.getElementById('region')
+    let cityDiv = document.getElementById('city')
+
+ 
+    const ipSearch = (ip) => {
 
         $(function () {
             $.ajax({
@@ -17,34 +22,35 @@
                      let latitude = data.location.lat
                      let longitude = data.location.lng
                  //    $("body").append("<pre>"+ JSON.stringify(data,"",2)+"</pre>");
-                    $(".ip").append(JSON.stringify(data.ip));
-                    $(".isp").append(JSON.stringify(data.isp));
-                    $(".region").append(JSON.stringify(data.location.region));
-                    $(".city").append(JSON.stringify(data.location.city));
+                    $("#ip").append(JSON.stringify(data.ip));
+                    $("#isp").append(JSON.stringify(data.isp));
+                    $("#region").append(JSON.stringify(data.location.region));
+                    $("#city").append(JSON.stringify(data.location.city));
                     console.log(latitude)
      
      
-     var map = L.map('mapid').setView([latitude, longitude], 13);
+     let map = L.map('mapid').setView([latitude, longitude], 13);
+
+     input.addEventListener('change', ()=>{
+        ipDiv.innerHTML = ''
+        ispDiv.innerHTML = ''
+        regionDiv.innerHTML = ''
+        cityDiv.innerHTML = ''
+        map.off();
+        map.remove()
+        ip = input.value
+        console.log(ip)
+        ipSearch(ip)
+        })
      
      L.tileLayer(`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`, {
          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-     }).addTo(map);
-     
-     L.marker([latitude, longitude]).addTo(map)
-         .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-         .openPopup();
-     
-     
+     }).addTo(map);  
                 }
             });
-         });
+         });   
+     
     }
-
-    input.addEventListener('change', ()=>{
-        if(mapContainer.hasAttribute('.leaflet-container')){
-            mapContainer.removeAttribute('mapid')
-        }
-        ip = input.value
-        console.log(input.value)
-        ipSearch()
-    })
+    ipSearch(ip)
+ 
+   
